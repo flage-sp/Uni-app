@@ -6,9 +6,6 @@
     "url": "https://web.itheima.com/"
   },
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0",
-    "dev": "...",
-    "build": "...",
     "dev:app": "uni -p app",
     "dev:app-android": "uni -p app-android",
     "dev:app-ios": "uni -p app-ios",
@@ -52,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "@dcloudio/uni-app": "3.0.0-4070620250821001",
+    "@dcloudio/uni-app": "2.0.2-4080720251210002",
     "@dcloudio/uni-app-harmony": "3.0.0-4070620250821001",
     "@dcloudio/uni-app-plus": "3.0.0-4070620250821001",
     "@dcloudio/uni-components": "3.0.0-4070620250821001",

@@ -1,8 +1,9 @@
-/// <reference types="vite/client" />
-
-declare module '*.vue' {
+declare module 'vue' {
   import { DefineComponent } from 'vue'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
   const component: DefineComponent<{}, {}, any>
   export default component
+  export function ref<T>(value: T): import('vue').Ref<T>
+  export function reactive<T extends object>(target: T): import('vue').Reactive<T>
+  export function computed<T>(getter: () => T): import('vue').ComputedRef<T>
+  export function createSSRApp<T>(getter: () => T): import('vue').createSSRApp<T>
 }

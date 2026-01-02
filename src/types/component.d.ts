@@ -66,3 +66,8 @@ export type typePageParams = {
   /** 页大小：默认值为 10 */
   pageSize?: number
 }
+type XtxGuessInstance = {
+  getguessyoulikeit: () => Promise<void> // 猜你喜欢初始化方法
+  add: () => Promise<any> // 加载更多
+  resetData: () => void // 重置数据
+}

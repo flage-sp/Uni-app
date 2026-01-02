@@ -2,7 +2,7 @@
 import { typeguessyoulikeit, typePageParams } from '@/types/component'
 import { ref } from 'vue'
 import { guessyoulikeit } from '@/api/index'
-import { onLoad } from '@dcloudio/uni-app'
+import { onReady } from '@dcloudio/uni-app'
 const pagparams = ref<typePageParams>({
   page: 2,
   pageSize: 10,
@@ -11,7 +11,6 @@ const pagparams = ref<typePageParams>({
 const guessyoulikeitlist = ref<typeguessyoulikeit[]>([])
 const getguessyoulikeit = async () => {
   const res = await guessyoulikeit()
-  console.log(res)
   guessyoulikeitlist.value = res.result.items
 }
 //判断数据到底的条件
@@ -21,7 +20,6 @@ const add = async () => {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
   const res = await guessyoulikeit(pagparams.value)
-  console.log(res.result.items)
   guessyoulikeitlist.value.push(...res.result.items)
   if (pagparams.value.page < res.result.pages) {
     pagparams.value.page++
@@ -29,10 +27,18 @@ const add = async () => {
     finish.value = true
   }
 }
+//重置数据，实现页面下拉刷新功能
+const resetData = () => {
+  pagparams.value.page = 1
+  guessyoulikeitlist.value = []
+  finish.value = false
+}
 defineExpose({
   add,
+  resetData,
+  getguessyoulikeit,
 })
-onLoad(() => {
+onReady(() => {
   getguessyoulikeit()
 })
 </script>
@@ -47,7 +53,7 @@ onLoad(() => {
       class="guess-item"
       v-for="item in guessyoulikeitlist"
       :key="item.id"
-      :url="`/pages/goods/goods?id={{ item.id }}`"
+      :url="`/pages/goods/goods?id=${item.id}`"
     >
       <image class="image" mode="aspectFill" :src="item.picture"></image>
       <view class="name"> {{ item.name }} </view>

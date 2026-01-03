@@ -10,7 +10,7 @@ import type {
   listtype,
   typepopularRecommendations,
   XtxGuessInstance,
-} from '@/types/component'
+} from '@/types/index/component'
 import { ref } from 'vue'
 //轮播图数据
 const slideshowlist = ref<swiperlist[]>([])

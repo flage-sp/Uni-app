@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { typepopularRecommendations } from '@/types/component'
+import { typepopularRecommendations } from '@/types/index/component'
 defineProps<{
   list: typepopularRecommendations[]
 }>()
@@ -13,7 +13,7 @@ defineProps<{
         <text class="title-text">{{ item.title }}</text>
         <text class="title-desc">{{ item.alt }}</text>
       </view>
-      <navigator hover-class="none" url="/pages/hot/hot" class="cards">
+      <navigator hover-class="none" :url="`/pages/hot/hot?type=${item.type}`" class="cards">
         <image class="image" mode="aspectFit" :src="item.pictures[0]"></image>
         <image class="image" mode="aspectFit" :src="item.pictures[1]"></image>
       </navigator>

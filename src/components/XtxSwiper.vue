@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { swiper, swiperlist } from '@/types/component'
+import type { swiper, swiperlist } from '@/types/index/component'
 //轮播图高亮小点
 const activeIndex = ref(0)
 const onChange = (ev: swiper) => {

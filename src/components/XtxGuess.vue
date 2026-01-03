@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { typeguessyoulikeit, typePageParams } from '@/types/component'
+import { typeguessyoulikeit, typePageParams } from '@/types/index/component'
 import { ref } from 'vue'
 import { guessyoulikeit } from '@/api/index'
 import { onReady } from '@dcloudio/uni-app'

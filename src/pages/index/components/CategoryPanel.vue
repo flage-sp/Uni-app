@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { listtype } from '@/types/component'
+import { listtype } from '@/types/index/component'
 defineProps<{
   list: listtype[]
 }>()

@@ -1,5 +1,5 @@
 // src/types/global.d.ts
-import { typeguessyoulikeit, typedata } from '@/types/index/component'
+import { typeguessyoulikeit, typedata, typeguessyoulikeit } from '@/types/index/component'
 /** 通用商品类型 */
 export type GoodsItem = {
   /** 商品描述 */

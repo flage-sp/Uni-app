@@ -40,7 +40,12 @@ const menuclose = ref(false)
 const dropdownrefresh = async () => {
   menuclose.value = true
   guessRef.value.resetData()
-  await Promise.all([slideshows(), getpopularRecommendations(), guessRef.value.add(), getlist()])
+  await Promise.all([
+    slideshows(),
+    getpopularRecommendations(),
+    (guessRef.value as XtxGuessInstance).add(),
+    getlist(),
+  ])
   menuclose.value = false
 }
 //控制骨架屏的显示和隐藏

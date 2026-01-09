@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { HotResult } from '@/types/hot/global'
-
+import { CategoryTopItem } from '@/types/category/category'
 import type {
   swiperlist,
   listtype,
@@ -9,6 +9,7 @@ import type {
   typedata,
   typePageParams,
 } from '@/types/index/component'
+/*轮播图请求接口*/
 export const slideshow = () => {
   return http<swiperlist[]>({
     method: 'GET',
@@ -49,5 +50,20 @@ export const getHotRecommendAPI = (url: string, data?: HotParams) => {
     method: 'GET',
     url,
     data,
+  })
+}
+//分类列表数据接口
+export const classificationmodule = () => {
+  return http<CategoryTopItem>({
+    method: 'GET',
+    url: '/category/top',
+  })
+}
+//商品详情数据接口
+export const itemdetails = (id: string) => {
+  return http({
+    method: 'GET',
+    url: '/goods',
+    data: { id },
   })
 }

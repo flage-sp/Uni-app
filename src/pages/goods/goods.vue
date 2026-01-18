@@ -6,6 +6,7 @@ import { ref } from 'vue'
 import AddressPanel from '@/pages/goods/components/AddressPanel.vue'
 import ServicePanel from '@/pages/goods/components/ServicePanel.vue'
 import SkeletonScreen from '@/pages/goods/SkeletonScreen.vue'
+import { GoodsResult } from '@/types/goods/goods'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 //获取跳转前页面的商品id
@@ -15,10 +16,9 @@ const query = defineProps<{
 //骨架屏控制
 const looding = ref(false)
 //商品详情数据
-const itemdetailsdata = ref('')
+const itemdetailsdata = ref<GoodsResult | []>([])
 const getitemdetails = async () => {
   const res = await itemdetails(query.id)
-  console.log(res.result)
   itemdetailsdata.value = res.result
   looding.value = true
 }
@@ -105,23 +105,17 @@ onLoad(() => {
       <view class="content">
         <view class="properties">
           <!-- 属性详情 -->
-          <view class="item">
-            <text class="label">属性名</text>
-            <text class="value">属性值</text>
-          </view>
-          <view class="item">
-            <text class="label">属性名</text>
-            <text class="value">属性值</text>
+          <view class="item" v-for="value in itemdetailsdata.details.properties" :key="value.name">
+            <text class="label">{{ value.name }}</text>
+            <text class="value">{{ value.value }}</text>
           </view>
         </view>
         <!-- 图片详情 -->
         <image
+          v-for="item in itemdetailsdata.details.pictures"
+          :key="item"
           mode="widthFix"
-          src="https://yanxuan-item.nosdn.127.net/a8d266886d31f6eb0d7333c815769305.jpg"
-        ></image>
-        <image
-          mode="widthFix"
-          src="https://yanxuan-item.nosdn.127.net/a9bee1cb53d72e6cdcda210071cbd46a.jpg"
+          :src="item"
         ></image>
       </view>
     </view>
@@ -133,28 +127,23 @@ onLoad(() => {
       </view>
       <view class="content">
         <navigator
-          v-for="item in 4"
-          :key="item"
+          v-for="item in itemdetailsdata.similarProducts"
+          :key="item.id"
           class="goods"
           hover-class="none"
-          :url="`/pages/goods/goods?id=`"
+          :url="`/pages/goods/goods?id=${item.id}`"
         >
-          <image
-            class="image"
-            mode="aspectFill"
-            src="https://yanxuan-item.nosdn.127.net/e0cea368f41da1587b3b7fc523f169d7.png"
-          ></image>
-          <view class="name ellipsis">简约山形纹全棉提花毛巾</view>
+          <image class="image" mode="aspectFill" :src="item.picture"></image>
+          <view class="name ellipsis">{{ item.name }}</view>
           <view class="price">
             <text class="symbol">¥</text>
-            <text class="number">18.50</text>
+            <text class="number">{{ item.price }}</text>
           </view>
         </navigator>
       </view>
     </view>
   </scroll-view>
   <SkeletonScreen v-else></SkeletonScreen>
-
   <!-- 用户操作 -->
   <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
     <view class="icons">

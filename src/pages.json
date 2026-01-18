@@ -47,7 +47,7 @@
 				"navigationBarTitleText": "热门推荐"
 			}
 		},
-    {
+		{
 			"path": "pages/goods/goods",
 			"style": {
 				"navigationBarTitleText": "商品详情"
@@ -92,5 +92,43 @@
 				"selectedIconPath": "static/tabs/user_selected.png"
 			}
 		]
-	}
+	},
+	"subPackages": [
+		{
+			"root": "subcontracting",
+			"pages": [
+				{
+					"path": "settings/settings",
+					"style": {
+						"navigationBarTitleText": "设置"
+					}
+				},
+        {
+					"path": "profile/profile",
+					"style": {
+            "navigationStyle": "custom",
+						"navigationBarTitleText": "个人信息"
+					}
+				},
+         {
+					"path": "address/address",
+					"style": {
+						"navigationBarTitleText": "地址管理"
+					}
+				},
+        {
+          "path": "address/address-form/address-form",
+          "style": {
+            "navigationBarTitleText": "新建地址"
+          }
+        }
+			]
+		}
+	],
+   "preloadRule": {
+    "pages/my/my": {
+      "network": "all", // [!code ++]
+      "packages": ["subcontracting"] // [!code ++]
+    }
+  }
 }

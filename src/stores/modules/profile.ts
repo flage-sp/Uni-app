@@ -1,28 +1,29 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { Profile } from '@/types/profile/profole'
 
 // 定义 Store
-export const useMemberStore = defineStore(
-  'member',
+export const peopleprofile = defineStore(
+  'profile',
   () => {
-    // 会员信息
-    const profile = ref<string | null>(null)
+    // 个人信息
+    const people = ref<Profile>({})
 
-    // 保存会员信息，登录时使用
-    const setprofile = (val: string) => {
-      profile.value = val
+    // 保存个人信息
+    const setpeople = (val: Profile) => {
+      people.value = val
     }
 
-    // 清理会员信息，退出时使用
-    const clearprofile = () => {
-      profile.value = null
+    // 清理个人信息
+    const clearpeople = () => {
+      people.value = null
     }
 
     // 记得 return
     return {
-      profile,
-      setprofile,
-      clearprofile,
+      people,
+      setpeople,
+      clearpeople,
     }
   },
   // TODO: 持久化

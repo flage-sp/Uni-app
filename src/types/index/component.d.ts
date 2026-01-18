@@ -69,5 +69,6 @@ export type typePageParams = {
 export interface XtxGuessInstance {
   getguessyoulikeit: () => Promise<void> // 猜你喜欢初始化方法
   add: () => Promise<void> // 加载更多
-  resetData: () => void // 重置数据
+  resetData: () => void
+  value: XtxGuessInstance // 重置数据
 }

@@ -12,6 +12,7 @@ import type {
   XtxGuessInstance,
 } from '@/types/index/component'
 import { ref } from 'vue'
+import { useGuessList } from '@/composables/index'
 //轮播图数据
 const slideshowlist = ref<swiperlist[]>([])
 const slideshows = async () => {
@@ -32,9 +33,7 @@ const getpopularRecommendations = async () => {
 }
 //滚动容器到底的函数
 const guessRef = ref<XtxGuessInstance | null>(null)
-const onScrolltolower = () => {
-  guessRef.value.add()
-}
+const { onScrolltolower } = useGuessList(guessRef)
 //下拉菜单调用组件方法
 const menuclose = ref(false)
 const dropdownrefresh = async () => {

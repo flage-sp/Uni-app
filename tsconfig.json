@@ -32,15 +32,12 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "shims-vue.d.ts" // 若 shims-vue.d.ts 在项目根目录，需显式包含！
+    "shims-vue.d.ts", // 若 shims-vue.d.ts 在项目根目录，需显式包含！
+    "main.ts",
+    "App.vue"
   ],
   "vueCompilerOptions": {
     "target": 3, // 关键：声明 Vue 3（必须！）
-    "nativeTags": [
-      "block",
-      "component",
-      "template",
-      "slot"
-    ]
+    "nativeTags": ["block", "component", "template", "slot"]
   }
 }

@@ -1,0 +1,1 @@
+import{d as a,c as s,w as t,i as e,o as r,f as o}from"./index-DuTe4m5j.js";import{_ as c}from"./_plugin-vue_export-helper.BCo6x5W8.js";const f=c(a({__name:"cart",setup:a=>(a,c)=>{const f=e;return r(),s(f,{class:"cart"},{default:t(()=>[o("cart")]),_:1})}}),[["__scopeId","data-v-293f42f2"]]);export{f as default};

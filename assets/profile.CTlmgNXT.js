@@ -1,1 +1,0 @@
-import{l as e,M as s,m as t,V as p}from"./index-Eq562Xxy.js";const l=e("profile",()=>{const e=s({});return{people:e,setpeople:s=>{e.value=s},clearpeople:()=>{e.value=null}}},{persist:{storage:{setItem(e,s){p(e,s)},getItem:e=>t(e)}}});export{l as p};

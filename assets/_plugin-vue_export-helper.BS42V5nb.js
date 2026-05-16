@@ -1,1 +1,0 @@
-import{l as e,M as s,m as t,V as r}from"./index-Eq562Xxy.js";const o=e("member",()=>{const e=s(null);return{profile:e,setprofile:s=>{e.value=s},clearprofile:()=>{e.value=null}}},{persist:{storage:{setItem(e,s){r(e,s)},getItem:e=>t(e)}}}),l=(e,s)=>{const t=e.__vccOpts||e;for(const[r,o]of s)t[r]=o;return t};export{l as _,o as u};

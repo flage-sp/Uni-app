@@ -27,6 +27,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'ts-plugin': ['off'],
     'prettier/prettier': [
       'warn',
       {

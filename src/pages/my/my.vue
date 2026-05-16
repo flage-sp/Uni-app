@@ -1,32 +1,35 @@
 <script setup lang="ts">
-import { useGuessList } from '@/composables/index'
-import { XtxGuessInstance } from '@/types/index/component'
-import { peopleprofile } from '@/stores/index'
-import { ref } from 'vue'
+import { useGuessList } from '@/composables'
+import { useMemberStore } from '@/stores'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
+// 订单选项
 const orderTypes = [
-  { type: 1, text: '待付款', icon: 'icon-currency' },
-  { type: 2, text: '待发货', icon: 'icon-gift' },
-  { type: 3, text: '待收货', icon: 'icon-check' },
-  { type: 4, text: '待评价', icon: 'icon-comment' },
+  { type: '1', text: '待付款', icon: 'icon-currency' },
+  { type: '2', text: '待发货', icon: 'icon-gift' },
+  { type: '3', text: '待收货', icon: 'icon-check' },
+  { type: '4', text: '待评价', icon: 'icon-comment' },
 ]
-const guessRef = ref<XtxGuessInstance | null>(null)
-const { onScrolltolower } = useGuessList(guessRef)
-const store = peopleprofile()
+// 获取会员信息
+const memberStore = useMemberStore()
+
+const { guessRef, onScrolltolower } = useGuessList()
 </script>
+
 <template>
-  <scroll-view class="viewport" scroll-y enable-back-to-top @scrolltolower="onScrolltolower">
+  <scroll-view enable-back-to-top @scrolltolower="onScrolltolower" class="viewport" scroll-y>
     <!-- 个人资料 -->
     <view class="profile" :style="{ paddingTop: safeAreaInsets!.top + 'px' }">
       <!-- 情况1：已登录 -->
-      <view class="overview" v-if="store.people">
-        <navigator url="/subcontracting/profile/profile" hover-class="none">
-          <image class="avatar" mode="aspectFill" :src="store.people.avatar"></image>
+      <view class="overview" v-if="memberStore.profile">
+        <navigator url="/pagesMember/profile/profile" hover-class="none">
+          <image class="avatar" :src="memberStore.profile.avatar" mode="aspectFill"></image>
         </navigator>
         <view class="meta">
-          <view class="nickname">{{ store.people.nickname }} </view>
-          <navigator class="extra" url="/subcontracting/profile/profile" hover-class="none">
+          <view class="nickname">
+            {{ memberStore.profile.nickname || memberStore.profile.account }}
+          </view>
+          <navigator class="extra" url="/pagesMember/profile/profile" hover-class="none">
             <text class="update">更新头像昵称</text>
           </navigator>
         </view>
@@ -37,19 +40,19 @@ const store = peopleprofile()
           <image
             class="avatar gray"
             mode="aspectFill"
-            src="http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png"
+            src="https://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png"
           ></image>
         </navigator>
         <view class="meta">
           <navigator url="/pages/login/login" hover-class="none" class="nickname">
             未登录
           </navigator>
-          <navigator class="extra" url="/pages/login/login">
+          <view class="extra">
             <text class="tips">点击登录账号</text>
-          </navigator>
+          </view>
         </view>
       </view>
-      <navigator class="settings" url="/subcontracting/settings/settings" hover-class="none">
+      <navigator class="settings" url="/pagesMember/settings/settings" hover-class="none">
         设置
       </navigator>
     </view>
@@ -74,7 +77,9 @@ const store = peopleprofile()
           {{ item.text }}
         </navigator>
         <!-- 客服 -->
+        <!-- #ifdef MP-WEIXIN -->
         <button class="contact icon-handset" open-type="contact">售后</button>
+        <!-- #endif -->
       </view>
     </view>
     <!-- 猜你喜欢 -->
@@ -100,7 +105,7 @@ page {
 
 /* 用户信息 */
 .profile {
-  margin-top: 20rpx;
+  margin-top: 30rpx;
   position: relative;
 
   .overview {
@@ -132,7 +137,7 @@ page {
   }
 
   .nickname {
-    max-width: 350rpx;
+    max-width: 180rpx;
     margin-bottom: 16rpx;
     font-size: 30rpx;
 
@@ -204,6 +209,9 @@ page {
         display: block;
         font-size: 60rpx;
         color: #ff9545;
+      }
+      &::after {
+        border: none;
       }
     }
     .contact {

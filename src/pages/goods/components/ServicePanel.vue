@@ -1,6 +1,5 @@
-// ServicePanel.vue
 <script setup lang="ts">
-//
+// 子调父
 const emit = defineEmits<{
   (event: 'close'): void
 }>()

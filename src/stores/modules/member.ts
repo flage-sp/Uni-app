@@ -1,3 +1,4 @@
+import type { LoginResult } from '@/types/member'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -6,35 +7,36 @@ export const useMemberStore = defineStore(
   'member',
   () => {
     // 会员信息
-    const profile = ref<string | null>(null)
+    const profile = ref<LoginResult>()
 
     // 保存会员信息，登录时使用
-    const setprofile = (val: string) => {
+    const setProfile = (val: LoginResult) => {
       profile.value = val
     }
 
     // 清理会员信息，退出时使用
-    const clearprofile = () => {
-      profile.value = null
+    const clearProfile = () => {
+      profile.value = undefined
     }
 
     // 记得 return
     return {
       profile,
-      setprofile,
-      clearprofile,
+      setProfile,
+      clearProfile,
     }
   },
-  // TODO: 持久化
   {
+    // 网页端配置
+    // persist: true,
+    // 小程序端配置
     persist: {
-      // 调整为兼容多端的API
       storage: {
-        setItem(key, value) {
-          uni.setStorageSync(key, value) // [!code warning]
-        },
         getItem(key) {
-          return uni.getStorageSync(key) // [!code warning]
+          return uni.getStorageSync(key)
+        },
+        setItem(key, value) {
+          uni.setStorageSync(key, value)
         },
       },
     },

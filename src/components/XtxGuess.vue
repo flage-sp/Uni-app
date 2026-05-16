@@ -1,45 +1,50 @@
 <script setup lang="ts">
-import { typeguessyoulikeit, typePageParams } from '@/types/index/component'
-import { ref } from 'vue'
-import { guessyoulikeit } from '@/api/index'
-import { onReady } from '@dcloudio/uni-app'
-const pagparams = ref<typePageParams>({
-  page: 2,
+import { getHomeGoodsGuessLikeAPI } from '@/services/home'
+import type { PageParams } from '@/types/global'
+import type { GuessItem } from '@/types/home'
+import { onMounted, ref } from 'vue'
+
+// 分页参数
+const pageParams: Required<PageParams> = {
+  page: 1,
   pageSize: 10,
-})
-//猜你喜欢数据
-const guessyoulikeitlist = ref<typeguessyoulikeit[]>([])
-const getguessyoulikeit = async () => {
-  const res = await guessyoulikeit()
-  guessyoulikeitlist.value = res.result.items
 }
-//判断数据到底的条件
+// 猜你喜欢的列表
+const guessList = ref<GuessItem[]>([])
+// 已结束标记
 const finish = ref(false)
-const add = async () => {
+// 获取猜你喜欢数据
+const getHomeGoodsGuessLikeData = async () => {
+  // 退出分页判断
   if (finish.value === true) {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
-  const res = await guessyoulikeit(pagparams.value)
-  guessyoulikeitlist.value.push(...res.result.items)
-  if (pagparams.value.page < res.result.pages) {
-    pagparams.value.page++
+  const res = await getHomeGoodsGuessLikeAPI(pageParams)
+  // guessList.value = res.result.items
+  // 数组追加
+  guessList.value.push(...res.result.items)
+  // 分页条件
+  if (pageParams.page < res.result.pages) {
+    // 页码累加
+    pageParams.page++
   } else {
     finish.value = true
   }
 }
-//重置数据，实现页面下拉刷新功能
+// 重置数据
 const resetData = () => {
-  pagparams.value.page = 1
-  guessyoulikeitlist.value = []
+  pageParams.page = 1
+  guessList.value = []
   finish.value = false
 }
-defineExpose({
-  add,
-  resetData,
-  getguessyoulikeit,
+// 组件挂载完毕
+onMounted(() => {
+  getHomeGoodsGuessLikeData()
 })
-onReady(() => {
-  getguessyoulikeit()
+// 暴露方法
+defineExpose({
+  resetData,
+  getMore: getHomeGoodsGuessLikeData,
 })
 </script>
 
@@ -51,7 +56,7 @@ onReady(() => {
   <view class="guess">
     <navigator
       class="guess-item"
-      v-for="item in guessyoulikeitlist"
+      v-for="item in guessList"
       :key="item.id"
       :url="`/pages/goods/goods?id=${item.id}`"
     >
@@ -63,7 +68,9 @@ onReady(() => {
       </view>
     </navigator>
   </view>
-  <view class="loading-text">{{ finish ? '已经到底了' : '正在加载...' }}</view>
+  <view class="loading-text">
+    {{ finish ? '没有更多数据~' : '正在加载...' }}
+  </view>
 </template>
 
 <style lang="scss">
@@ -122,8 +129,7 @@ onReady(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+
     -webkit-box-orient: vertical;
   }
   .price {

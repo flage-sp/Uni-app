@@ -1,46 +1,23 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "useDefineForClassFields": true,
-    "lib": ["esnext", "dom"],
-    "module": "esnext",
-    "skipLibCheck": true,
-    "moduleResolution": "node",
-    "allowJs": false,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
+    "allowJs": true,
+    "sourceMap": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
+    "lib": ["esnext", "dom"],
     "types": [
-      "@dcloudio/types", // 优先：uni-app 核心类型（必须放最前）
-      "@uni-helper/uni-app-types", // uni-app 组件类型（补充官方类型）
-      "@uni-helper/uni-ui-types", // uni-ui 组件类型
-      "miniprogram-api-typings", // 小程序 API 类型
-      "vue"
+      "@dcloudio/types",
+      "miniprogram-api-typings",
+      "@uni-helper/uni-app-types",
+      "@uni-helper/uni-ui-types"
     ]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "shims-vue.d.ts" // 若 shims-vue.d.ts 在项目根目录，需显式包含！
-  ],
   "vueCompilerOptions": {
-    "target": 3, // 关键：声明 Vue 3（必须！）
-    "nativeTags": [
-      "block",
-      "component",
-      "template",
-      "slot"
-    ]
-  }
+    // experimentalRuntimeMode 已废弃，请升级 Vue - Official 插件至最新版本
+    "plugins": ["@uni-helper/uni-app-types/volar-plugin"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

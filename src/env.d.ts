@@ -1,9 +1,15 @@
-declare module 'vue' {
-  import { DefineComponent } from 'vue'
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue'
   const component: DefineComponent<{}, {}, any>
   export default component
-  export function ref<T>(value: T): import('vue').Ref<T>
-  export function reactive<T extends object>(target: T): import('vue').Reactive<T>
-  export function computed<T>(getter: () => T): import('vue').ComputedRef<T>
-  export function createSSRApp<T>(getter: () => T): import('vue').createSSRApp<T>
+}
+
+declare module '@dcloudio/uni-ui' {
+  import type { DefineComponent } from 'vue'
+  const component: DefineComponent<any, any, any>
+  export default component
+}
+
+declare module 'uni-app' {
+  export type View = any
 }

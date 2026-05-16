@@ -1,31 +1,87 @@
 <script setup lang="ts">
+import { postLoginAPI, postLoginWxMinAPI, postLoginWxMinSimpleAPI } from '@/services/login'
+import { useMemberStore } from '@/stores'
+import type { LoginResult } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
-import { Login } from '@/api/index'
-import { useMemberStore } from '@/stores/index'
-import { LoginResult } from '@/types/login/login'
-let code = ref(null)
-//企业中获取手机号的方法
-const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = (ev) => {
-  console.log(ev)
-}
-const onGetphonenumberSimple = async () => {
-  const res = await Login('19074945140')
-  loginSuccess(res.result)
-}
-const loginSuccess = (profile: LoginResult) => {
-  const store = useMemberStore()
-  store.setprofile(profile)
-  uni.showToast({ icon: 'success', title: '登陆成功' })
-  setTimeout(() => {
-    uni.switchTab({ url: '/pages/my/my' })
-  }, 1000)
-}
+
+// #ifdef MP-WEIXIN
+// 获取 code 登录凭证
+let code = ''
 onLoad(async () => {
   const res = await wx.login()
-  code.value = res.code
-  console.log(res)
+  code = res.code
 })
+
+// 获取用户手机号码
+const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (ev) => {
+  await checkedAgreePrivacy()
+  const { encryptedData, iv } = ev.detail
+  const res = await postLoginWxMinAPI({ code, encryptedData, iv })
+  loginSuccess(res.result)
+}
+// #endif
+
+// 模拟手机号码快捷登录（开发练习）
+const onGetphonenumberSimple = async () => {
+  await checkedAgreePrivacy()
+  const res = await postLoginWxMinSimpleAPI('13123456789')
+  loginSuccess(res.result)
+}
+
+const loginSuccess = (profile: LoginResult) => {
+  // 保存会员信息
+  const memberStore = useMemberStore()
+  memberStore.setProfile(profile)
+  // 成功提示
+  uni.showToast({ icon: 'success', title: '登录成功' })
+  setTimeout(() => {
+    // 页面跳转
+    // uni.switchTab({ url: '/pages/my/my' })
+    uni.navigateBack()
+  }, 500)
+}
+
+// #ifdef H5
+// 传统表单登录，测试账号：13123456789 密码：123456，测试账号仅开发学习使用。
+const form = ref({
+  account: '13123456789',
+  password: '',
+})
+
+// 表单提交
+const onSubmit = async () => {
+  await checkedAgreePrivacy()
+  const res = await postLoginAPI(form.value)
+  loginSuccess(res.result)
+}
+// #endif
+
+// 请先阅读并勾选协议
+const isAgreePrivacy = ref(false)
+const isAgreePrivacyShakeY = ref(false)
+const checkedAgreePrivacy = async () => {
+  if (!isAgreePrivacy.value) {
+    uni.showToast({
+      icon: 'none',
+      title: '请先阅读并勾选协议',
+    })
+    // 震动提示
+    isAgreePrivacyShakeY.value = true
+    setTimeout(() => {
+      isAgreePrivacyShakeY.value = false
+    }, 500)
+    // 返回错误
+    return Promise.reject(new Error('请先阅读并勾选协议'))
+  }
+}
+
+const onOpenPrivacyContract = () => {
+  // #ifdef MP-WEIXIN
+  // 跳转至隐私协议页面
+  wx.openPrivacyContract({})
+  // #endif
+}
 </script>
 
 <template>
@@ -37,15 +93,28 @@ onLoad(async () => {
     </view>
     <view class="login">
       <!-- 网页端表单登录 -->
-      <!-- <input class="input" type="text" placeholder="请输入用户名/手机号码" /> -->
-      <!-- <input class="input" type="text" password placeholder="请输入密码" /> -->
-      <!-- <button class="button phone">登录</button> -->
+      <!-- #ifdef H5 -->
+      <input v-model="form.account" class="input" type="text" placeholder="请输入用户名/手机号码" />
+      <input v-model="form.password" class="input" type="text" password placeholder="请输入密码" />
+      <button @tap="onSubmit" class="button phone">登录</button>
+      <!-- #endif -->
 
       <!-- 小程序端授权登录 -->
-      <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber">
-        <text class="icon icon-phone"></text>
-        手机号快捷登录
-      </button>
+      <!-- #ifdef MP-WEIXIN -->
+      <view class="button-privacy-wrap">
+        <button
+          :hidden="isAgreePrivacy"
+          class="button-opacity button phone"
+          @tap="checkedAgreePrivacy"
+        >
+          请先阅读并勾选协议
+        </button>
+        <button class="button phone" open-type="getPhoneNumber" @getphonenumber="onGetphonenumber">
+          <text class="icon icon-phone"></text>
+          手机号快捷登录
+        </button>
+      </view>
+      <!-- #endif -->
       <view class="extra">
         <view class="caption">
           <text>其他登录方式</text>
@@ -57,7 +126,20 @@ onLoad(async () => {
           </button>
         </view>
       </view>
-      <view class="tips">登录/注册即视为你同意《服务条款》和《小兔鲜儿隐私协议》</view>
+      <view class="tips" :class="{ animate__shakeY: isAgreePrivacyShakeY }">
+        <label class="label">
+          <radio
+            class="radio"
+            color="#28bb9c"
+            :checked="isAgreePrivacy"
+            @tap="isAgreePrivacy = !isAgreePrivacy"
+          />
+          <text @tap="isAgreePrivacy = !isAgreePrivacy">登录/注册即视为你同意小兔鲜儿</text>
+        </label>
+        <navigator class="link" hover-class="none" url="./protocal">《服务条款》</navigator>
+        和
+        <text class="link" @tap="onOpenPrivacyContract">《隐私协议》</text>
+      </view>
     </view>
   </view>
 </template>
@@ -150,6 +232,9 @@ page {
       button {
         padding: 0;
         background-color: transparent;
+        &::after {
+          border: none;
+        }
       }
     }
 
@@ -179,6 +264,31 @@ page {
   }
 }
 
+@keyframes animate__shakeY {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, -5rpx);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.animate__shakeY {
+  animation: animate__shakeY 0.2s ease-in-out 3;
+}
+
+.button-privacy-wrap {
+  position: relative;
+  .button-opacity {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+  }
+}
+
 .tips {
   position: absolute;
   bottom: 80rpx;
@@ -187,5 +297,17 @@ page {
   font-size: 22rpx;
   color: #999;
   text-align: center;
+
+  .radio {
+    transform: scale(0.6);
+    margin-right: -4rpx;
+    margin-top: -4rpx;
+    vertical-align: middle;
+  }
+
+  .link {
+    display: inline;
+    color: #28bb9c;
+  }
 }
 </style>
